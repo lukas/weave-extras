@@ -14,22 +14,24 @@ class LLMScore(BaseModel):
     explanation: str
 
 
-st.title("QA Model Evaluation Dashboard")
+st.title("Model Evaluation")
 
 # Initialize Weave and load models
 weave.init('example')
-qa_pairs = weave.ref("qa_pairs").get()
+qa_pairs: weave.Dataset = weave.ref("qa_pairs").get()
 
 # Load the vector index
 vector_index = weaveindex.load_vector_index()
 query_engine = vector_index.as_query_engine()
 
+# Add checkbox for testing mode before model selection
+test_mode = st.checkbox("Test on small dataset (3 rows)", value=False)
 
 # Replace single model selection with multiselect
 selected_models = st.multiselect(
     "Select OpenAI Models",
     ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o-mini", "gpt-4o"],
-    default=["gpt-3.5-turbo"]  # Optional: set default selection
+    default=["gpt-3.5-turbo"]
 )
 
 if st.button("Run Evaluation"):
@@ -38,6 +40,13 @@ if st.button("Run Evaluation"):
     else:
         with st.spinner("Evaluating models..."):
             all_results = {}
+
+            # Add dataset selection based on test mode
+            # if test_mode else qa_pairs
+            if test_mode:
+                evaluation_dataset = qa_pairs.rows[:3]
+            else:
+                evaluation_dataset = qa_pairs
 
             # Create all model instances first
             model_instances = {
@@ -51,7 +60,7 @@ if st.button("Run Evaluation"):
 
             # Single evaluation for all models
             evaluation = Evaluation(
-                dataset=qa_pairs,
+                dataset=evaluation_dataset,  # Use the selected dataset
                 scorers=[llm_judge_question_answer_match],
             )
 

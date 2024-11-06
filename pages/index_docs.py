@@ -33,13 +33,28 @@ def main():
                 else:
                     st.error("No docs found.")
     with col2:
+        # Add chunking options
+        chunk_size = st.number_input("Chunk Size (characters)", 
+            min_value=100, 
+            max_value=2000, 
+            value=500,
+            help="Number of characters per chunk")
+        
+        chunk_overlap = st.number_input("Chunk Overlap (characters)",
+            min_value=0,
+            max_value=500,
+            value=50,
+            help="Number of overlapping characters between chunks")
+            
         if st.button("2. Create Index"):
             if 'count_docs' not in st.session_state:
                 st.error("Please crawl the docs first!")
             else:
                 with st.spinner("Creating vector index..."):
                     vector_index = weaveindex.create_vector_index(
-                        docs_dir)
+                        docs_dir,
+                        chunk_size=chunk_size,
+                        chunk_overlap=chunk_overlap)
                     st.success("Vector index created successfully!")
                     st.session_state['vector_index'] = vector_index
 

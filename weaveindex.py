@@ -52,32 +52,55 @@ def crawl_github_docs(url, docs_dir):
     return md_links
 
 
-def create_vector_index(docs_dir):
+def create_vector_index(docs_dir, index_options=None, chunk_size=1024, chunk_overlap=20):
+    if index_options is None:
+        index_options = {}
+    
     db = chromadb.PersistentClient(path=chroma_path)
+    
+    # Configure document loading with chunk size and overlap
     documents = SimpleDirectoryReader(docs_dir).load_data()
+    
+    # Create text splitter with the specified chunk size and overlap
+    from llama_index.core.node_parser import SentenceSplitter
+    node_parser = SentenceSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+    nodes = node_parser.get_nodes_from_documents(documents)
 
-    embed_model = OpenAIEmbedding(embed_batch_size=10)
+    embed_model = OpenAIEmbedding(
+        embed_batch_size=index_options.get('embed_batch_size', 10)
+    )
 
-    chroma_collection = db.get_or_create_collection("quickstart")
+    collection_name = index_options.get('collection_name', 'quickstart')
+    chroma_collection = db.get_or_create_collection(collection_name)
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
-    index = VectorStoreIndex.from_documents(
-        documents, storage_context=storage_context, embed_model=embed_model
+    index = VectorStoreIndex(
+        nodes, 
+        storage_context=storage_context, 
+        embed_model=embed_model,
+        **{k: v for k, v in index_options.items() if k not in ['embed_batch_size', 'collection_name']}
     )
 
     return index
 
 
-def load_vector_index():
+def load_vector_index(index_options=None):
+    if index_options is None:
+        index_options = {}
+    
     db = chromadb.PersistentClient(path=chroma_path)
-    embed_model = OpenAIEmbedding(embed_batch_size=10)
+    embed_model = OpenAIEmbedding(
+        embed_batch_size=index_options.get('embed_batch_size', 10)
+    )
 
-    chroma_collection = db.get_or_create_collection("quickstart")
+    collection_name = index_options.get('collection_name', 'quickstart')
+    chroma_collection = db.get_or_create_collection(collection_name)
     vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
     index = VectorStoreIndex.from_vector_store(
         vector_store,
         embed_model=embed_model,
+        **{k: v for k, v in index_options.items() if k not in ['embed_batch_size', 'collection_name']}
     )
     return index
 

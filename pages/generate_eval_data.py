@@ -118,9 +118,19 @@ def main():
     # Add a button to trigger generation
     if st.button("Generate Q&A Pairs"):
         with st.spinner("Generating Q&A pairs..."):
-            generate_qa_pair_dataset(
+            qapairlist = generate_qa_pair_dataset(
                 inp_dataset_name, out_dataset_name, num_pairs)
         st.success(f"Successfully generated {num_pairs} Q&A pairs!")
+        
+        # Display the generated QA pairs
+        st.subheader("Generated Question-Answer Pairs")
+        dataset = weave.ref(out_dataset_name).get()
+        for i, row in enumerate(dataset.rows, 1):
+            st.markdown(f"**Pair {i}**")
+            st.markdown(f"📄 File: `{row['filename']}`")
+            st.markdown(f"❓ Question: {row['question']}")
+            st.markdown(f"✅ Answer: {row['answer']}")
+            st.divider()
 
 
 weave.init('example')
