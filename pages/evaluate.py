@@ -5,6 +5,7 @@ import model
 import asyncio
 from pydantic import BaseModel
 from scorers import llm_judge_question_answer_match
+from bias import bias_score
 from weave import Evaluation
 import pandas as pd
 
@@ -34,9 +35,24 @@ selected_models = st.multiselect(
     default=["gpt-3.5-turbo"]
 )
 
+# Add this after the model selection multiselect and before the "Run Evaluation" button
+available_evaluators = {
+    "Question-Answer Match": llm_judge_question_answer_match,
+    "Bias Score": bias_score
+}
+
+selected_evaluators = st.multiselect(
+    "Select Evaluators",
+    options=list(available_evaluators.keys()),
+    default=["Question-Answer Match"],
+    help="Choose which evaluation metrics to run"
+)
+
 if st.button("Run Evaluation"):
     if not selected_models:
         st.warning("Please select at least one model to evaluate.")
+    elif not selected_evaluators:
+        st.warning("Please select at least one evaluator.")
     else:
         with st.spinner("Evaluating models..."):
             all_results = {}
@@ -60,8 +76,9 @@ if st.button("Run Evaluation"):
 
             # Single evaluation for all models
             evaluation = Evaluation(
-                dataset=evaluation_dataset,  # Use the selected dataset
-                scorers=[llm_judge_question_answer_match],
+                dataset=evaluation_dataset,
+                scorers=[available_evaluators[eval_name]
+                         for eval_name in selected_evaluators],
             )
 
             # Evaluate models one at a time
