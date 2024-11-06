@@ -121,7 +121,7 @@ def main():
             qapairlist = generate_qa_pair_dataset(
                 inp_dataset_name, out_dataset_name, num_pairs)
         st.success(f"Successfully generated {num_pairs} Q&A pairs!")
-        
+
         # Display the generated QA pairs
         st.subheader("Generated Question-Answer Pairs")
         dataset = weave.ref(out_dataset_name).get()

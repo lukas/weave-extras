@@ -9,8 +9,8 @@ class QAModel(Model):
     model_name: str
 
     @weave.op()
-    def predict(self, question: str) -> dict:
+    async def predict(self, question: str) -> dict:
         # Model logic goes here
-        prediction = weaveindex.query(question, self.query_engine,
-                                      self.model_name)
+        prediction = await weaveindex.query(question, self.query_engine,
+                                            self.model_name)
         return {'pred': prediction}

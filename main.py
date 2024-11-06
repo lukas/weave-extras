@@ -7,8 +7,7 @@ import pages.query_docs
 
 
 def main():
-
-    st.title("Weave Powered Document Indexing, Querying and Evaluation")
+    st.title("Document Intelligence Platform")
 
 
 if __name__ == "__main__":

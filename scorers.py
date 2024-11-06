@@ -14,7 +14,7 @@ class SemanticEntailment(BaseModel):
     explanation: str
 
 
-def llm_judge_question_answer_match(question: str, answer: str, model_output: dict) -> LLMScore:
+async def llm_judge_question_answer_match(question: str, answer: str, model_output: dict) -> LLMScore:
     # from https://www.nature.com/articles/s41586-024-07421-0
 
     prompt = f"""We are assessing the quality of answers to the following question: {question}

@@ -10,7 +10,7 @@ query_engine = vector_index.as_query_engine()
 
 
 def main():
-    st.title("InteractiveQuery Interface")
+    st.title("Interactive Query Interface")
 
     # Model selector with a more subtle appearance
     selected_model = st.selectbox(
