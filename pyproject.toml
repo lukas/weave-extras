@@ -1,0 +1,19 @@
+[project]
+name = "weave-extras"
+version = "0.1.0"
+description = "Tools for working with RAG and Q/A usecases"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.12.3",
+    "bias>=0.0.1",
+    "chromadb>=0.5.18",
+    "llama_index>=0.11.22",
+    "llama-index-vector-stores-chroma>=0.3.0",
+    "openai>=1.54.3",
+    "pandas>=2.2.3",
+    "pydantic>=2.9.2",
+    "requests>=2.32.3",
+    "streamlit>=1.40.0",
+    "weave>=0.51.19"
+]
