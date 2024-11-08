@@ -4,3 +4,4 @@ __pycache__
 build/
 dist/
 weave_extras.egg-info/
+chroma_db/
