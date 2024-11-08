@@ -1,3 +1,6 @@
 __pycache__
 .venv/
 .DS_Store
+build/
+dist/
+weave_extras.egg-info/

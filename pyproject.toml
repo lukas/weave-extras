@@ -1,5 +1,5 @@
 [project]
-name = "weave-extras"
+name = "weave_extras"
 version = "0.1.0"
 description = "Tools for working with RAG and Q/A usecases"
 readme = "README.md"
@@ -17,3 +17,10 @@ dependencies = [
     "streamlit>=1.40.0",
     "weave>=0.51.19"
 ]
+
+[project.scripts]
+ragsuite = "weave_extras.cli:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
