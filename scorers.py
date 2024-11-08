@@ -102,3 +102,20 @@ def llm_judge_match_score(answer: str, model_output: dict) -> LLMScore:
     )
     score = response.choices[0].message.parsed.score
     return score
+
+
+@weave.op()
+def precision_at_k(predictions: list[dict], k: int) -> float:
+    # returns the precision at k
+    return len(predictions) / k
+
+
+@weave.op()
+def recall_at_k(predictions: list[dict], k: int) -> float:
+    # returns the recall at k
+    return len(predictions) / k
+
+
+def hallucination_score(predictions: list[dict]) -> float:
+    # returns the hallucination score
+    return len(predictions) / k
